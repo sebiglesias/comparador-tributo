@@ -1,0 +1,21 @@
+# Cloudflare Pages Configuration
+# https://developers.cloudflare.com/pages/platform/build-configuration/
+
+name = "comparador-tributo"
+compatibility_date = "2024-01-01"
+
+# Pages configuration
+[env.production]
+name = "comparador-tributo"
+
+# Build configuration
+[build]
+command = ""  # No build needed - static files only
+cwd = "/"
+
+[build.upload]
+format = "service-worker"
+
+# Optional: Custom domains (configure in Cloudflare dashboard)
+# [env.production.routes]
+# pattern = "comparador-tributo.tu-dominio.com"

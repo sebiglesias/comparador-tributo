@@ -119,6 +119,45 @@ http://localhost:8000
    - Detalles por régimen
    - Recomendación personalizada
 
+## 🚀 Deployment en Cloudflare Pages
+
+Esta aplicación está lista para ser desplegada en Cloudflare Pages:
+
+### Deploy Rápido (Opción 1 - Recomendado)
+
+1. Ve a [Cloudflare Dashboard](https://dash.cloudflare.com/) → Workers & Pages → Create application
+2. Conecta tu repositorio de GitHub
+3. Configuración:
+   - Framework preset: **None**
+   - Build command: *(dejar vacío)*
+   - Build output directory: **/**
+4. Click "Save and Deploy"
+
+Tu sitio estará disponible en: `https://comparador-tributo.pages.dev`
+
+### Deploy con Wrangler CLI (Opción 2)
+
+```bash
+# Instalar Wrangler
+npm install -g wrangler
+
+# Login a Cloudflare
+wrangler login
+
+# Deploy
+wrangler pages deploy . --project-name=comparador-tributo
+```
+
+**📖 Guía completa:** Ver [CLOUDFLARE_DEPLOYMENT.md](./CLOUDFLARE_DEPLOYMENT.md) para instrucciones detalladas, configuración de dominios custom, analytics, y más.
+
+### Características del Deploy
+
+✅ **CDN Global** - Cloudflare CDN en 200+ ubicaciones  
+✅ **SSL Automático** - HTTPS con certificado gratuito  
+✅ **Preview Deployments** - Para cada Pull Request  
+✅ **Zero Config** - Archivos `_headers` y `_redirects` incluidos  
+✅ **100% Gratis** - Bandwidth y requests ilimitados  
+
 ## 📱 PWA - Progressive Web App
 
 La aplicación es instalable como PWA:
