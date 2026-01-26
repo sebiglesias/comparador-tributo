@@ -1,6 +1,5 @@
 # Git files
 .git/
-.gitignore
 
 # Wrangler temp files
 .wrangler/
