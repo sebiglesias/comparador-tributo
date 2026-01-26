@@ -1,13 +1,13 @@
-# 🧮 Comparador de Regímenes Tributarios Argentina 2025-2026
+# 🧮 Comparador de Regímenes Tributarios Argentina 2026
 
-Aplicación web PWA (Progressive Web App) para comparar exhaustivamente el costo real entre trabajar en **Relación de Dependencia**, **Monotributo** y **Responsable Inscripto** en Argentina, con normativa actualizada vigente 2025-2026.
+Aplicación web PWA (Progressive Web App) para comparar exhaustivamente el costo real entre trabajar en **Relación de Dependencia**, **Monotributo** y **Responsable Inscripto** en Argentina, con normativa actualizada vigente para el primer semestre 2026.
 
 ## 🎯 Características
 
 ### Cálculos Completos
-- **Monotributo**: Categorías A-K con cuotas actualizadas (Agosto 2025)
-- **Relación de Dependencia**: Aportes personales (17%), Ganancias con escala progresiva, contribuciones patronales
-- **Responsable Inscripto**: Autónomos, IVA, Ganancias, Ingresos Brutos, Impuesto al Cheque
+- **Monotributo**: Categorías A-K con cuotas actualizadas (Febrero 2026 - aumento 14.3%)
+- **Relación de Dependencia**: Aportes personales (17%), Ganancias con escala progresiva actualizada (Enero-Junio 2026)
+- **Responsable Inscripto**: Autónomos (Enero 2026), IVA, Ganancias, Ingresos Brutos, Impuesto al Cheque
 
 ### Funcionalidades
 ✅ Comparación lado a lado de los tres regímenes  
@@ -31,22 +31,36 @@ Aplicación web PWA (Progressive Web App) para comparar exhaustivamente el costo
 
 ## 📊 Normativa Implementada
 
-### Monotributo
+### Monotributo (Vigente desde Febrero 2026)
 - Ley 27.743 (actualización monotributo)
-- Categorías A-K vigentes desde Agosto 2025
-- Límites de facturación para servicios y venta de bienes
+- Categorías A-K actualizadas con aumento del 14.3% (inflación julio-diciembre 2025)
+- Límites de facturación para servicios y venta de bienes:
+  - **Categoría A servicios**: hasta $10.278.540/año → Cuota: $42.389/mes
+  - **Categoría K servicios**: hasta $108.362.895/año → Cuota: $1.171.212,59/mes
 
-### Relación de Dependencia
+### Relación de Dependencia (Vigente Enero-Junio 2026)
 - Ley 24.241 (Sistema SIPA)
 - Aportes personales: Jubilación 11%, PAMI 3%, Obra Social 3%
 - Contribuciones patronales: ~23% total
-- Impuesto a las Ganancias con escala progresiva Art. 94
-- Deducciones personales (segundo semestre 2025)
+- Impuesto a las Ganancias con escala progresiva Art. 94 actualizada
+- **Deducciones personales anuales (Enero-Junio 2026):**
+  - Ganancia no imponible: $5.036.140,63
+  - Por cónyuge: $4.743.034,38
+  - Por hijo: $2.391.929,54
+  - Deducción especial trabajadores: $17.626.492,21
+- **Mínimos no imponibles mensuales:**
+  - Soltero/a: $3.000.046 bruto / $2.488.922 neto
+  - Casado/a con 2 hijos: $3.952.152 bruto / $3.300.726 neto
 
-### Responsable Inscripto
+### Responsable Inscripto (Vigente Enero 2026)
 - Ley 20.628 (Ganancias)
 - Ley 23.349 (IVA)
-- Autónomos categorías I-V (Enero 2026)
+- **Autónomos categorías actualizadas (Enero 2026):**
+  - Categoría I: $62.743,08/mes
+  - Categoría II: $85.048/mes
+  - Categoría III: $121.426/mes
+  - Categoría IV: $194.281/mes
+  - Categoría V: $267.137/mes
 - Ingresos Brutos provincial (alícuotas estimadas)
 - Impuesto al cheque (0.6% débito + 0.6% crédito)
 
@@ -170,7 +184,10 @@ La aplicación es instalable como PWA:
 
 Esta calculadora es **orientativa**. Los valores pueden cambiar según actualizaciones de ARCA/AFIP. Consultá con un contador matriculado para asesoramiento personalizado.
 
-**Última actualización de valores**: Enero 2026
+**Última actualización de valores**: Enero-Febrero 2026
+- Monotributo: Febrero 2026 (aumento 14.3%)
+- Ganancias/Deducciones: Enero-Junio 2026 (aumento 13.5%-14.3%)
+- Autónomos: Enero 2026 (aumento 2.47%)
 
 ## 🔗 Referencias Oficiales
 

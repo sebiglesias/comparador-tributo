@@ -1,76 +1,83 @@
 /**
- * Tax Calculator for Argentina 2025-2026
+ * Tax Calculator for Argentina 2026
  * Compares: Monotributo, Relación de Dependencia, and Responsable Inscripto
+ * Updated with January-June 2026 values
  */
 
 // =============================================================================
 // Constants and Data
 // =============================================================================
 
-// Monotributo Categories (Services) - Valid from August 2025
+// Monotributo Categories (Services) - Valid from February 2026
+// Updated with 14.3% increase (inflation July-December 2025)
 const MONOTRIBUTO_CATEGORIES_SERVICES = [
-    { category: 'A', maxAnnual: 8992597.87, monthlyFee: 37085.74 },
-    { category: 'B', maxAnnual: 13175201.52, monthlyFee: 42216.41 },
-    { category: 'C', maxAnnual: 18434799.51, monthlyFee: 48478.91 },
-    { category: 'D', maxAnnual: 27181485.12, monthlyFee: 59003.88 },
-    { category: 'E', maxAnnual: 31837892.02, monthlyFee: 68397.01 },
-    { category: 'F', maxAnnual: 37652105.73, monthlyFee: 81003.65 },
-    { category: 'G', maxAnnual: 44274653.63, monthlyFee: 97823.80 },
-    { category: 'H', maxAnnual: 50139759.18, monthlyFee: 115775.79 },
-    { category: 'I', maxAnnual: 59500350.28, monthlyFee: 194093.62 },
-    { category: 'J', maxAnnual: 68860941.38, monthlyFee: 259458.16 },
-    { category: 'K', maxAnnual: 94560000, monthlyFee: 1381687.90 }
+    { category: 'A', maxAnnual: 10278540, monthlyFee: 42389 },
+    { category: 'B', maxAnnual: 15059075, monthlyFee: 48253 },
+    { category: 'C', maxAnnual: 21071176, monthlyFee: 55411 },
+    { category: 'D', maxAnnual: 31066478, monthlyFee: 67441 },
+    { category: 'E', maxAnnual: 36388711, monthlyFee: 78178 },
+    { category: 'F', maxAnnual: 43034557, monthlyFee: 92587 },
+    { category: 'G', maxAnnual: 50606013, monthlyFee: 111811 },
+    { category: 'H', maxAnnual: 57314807, monthlyFee: 132332 },
+    { category: 'I', maxAnnual: 68008950, monthlyFee: 221813 },
+    { category: 'J', maxAnnual: 78703096, monthlyFee: 296570 },
+    { category: 'K', maxAnnual: 108362895, monthlyFee: 1171212.59 }
 ];
 
 // Monotributo Categories (Goods) - Higher limits for goods
+// Valid from February 2026 - Updated with 14.3% increase
 const MONOTRIBUTO_CATEGORIES_GOODS = [
-    { category: 'A', maxAnnual: 11240747.34, monthlyFee: 37085.74 },
-    { category: 'B', maxAnnual: 16469001.90, monthlyFee: 42216.41 },
-    { category: 'C', maxAnnual: 23043499.39, monthlyFee: 48478.91 },
-    { category: 'D', maxAnnual: 33976856.40, monthlyFee: 59003.88 },
-    { category: 'E', maxAnnual: 39797365.03, monthlyFee: 68397.01 },
-    { category: 'F', maxAnnual: 47065132.16, monthlyFee: 81003.65 },
-    { category: 'G', maxAnnual: 55343317.04, monthlyFee: 97823.80 },
-    { category: 'H', maxAnnual: 62674698.98, monthlyFee: 115775.79 },
-    { category: 'I', maxAnnual: 74375437.85, monthlyFee: 194093.62 },
-    { category: 'J', maxAnnual: 86076176.73, monthlyFee: 259458.16 },
-    { category: 'K', maxAnnual: 118200000, monthlyFee: 1381687.90 }
+    { category: 'A', maxAnnual: 12848175, monthlyFee: 42389 },
+    { category: 'B', maxAnnual: 18823844, monthlyFee: 48253 },
+    { category: 'C', maxAnnual: 26338970, monthlyFee: 55411 },
+    { category: 'D', maxAnnual: 38833098, monthlyFee: 67441 },
+    { category: 'E', maxAnnual: 45485889, monthlyFee: 78178 },
+    { category: 'F', maxAnnual: 53793196, monthlyFee: 92587 },
+    { category: 'G', maxAnnual: 63257516, monthlyFee: 111811 },
+    { category: 'H', maxAnnual: 71643509, monthlyFee: 132332 },
+    { category: 'I', maxAnnual: 85011188, monthlyFee: 221813 },
+    { category: 'J', maxAnnual: 98378870, monthlyFee: 296570 },
+    { category: 'K', maxAnnual: 135453619, monthlyFee: 1171212.59 }
 ];
 
-// Personal Deductions for Ganancias (July-December 2025)
+// Personal Deductions for Ganancias (January-June 2026)
+// Updated with 13.5%-14.3% increase (inflation July-December 2025)
 const GANANCIAS_DEDUCTIONS = {
-    noImponible: 3916268.37,
-    conyuge: 3688339.32,
-    hijo: 1860042.98,
-    deduccionEspecial: 13706939.31
+    noImponible: 5036140.63,
+    conyuge: 4743034.38,
+    hijo: 2391929.54,
+    deduccionEspecial: 17626492.21
 };
 
-// Minimum Non-Taxable Income for Employees (Second Semester 2025)
+// Minimum Non-Taxable Income for Employees (January-June 2026)
+// Updated with 13.5%-14.3% increase (inflation July-December 2025)
 const MIN_NON_TAXABLE = {
-    single: { bruto: 2843180, neto: 2360180 },
-    married2Kids: { bruto: 3771045, neto: 3129967 }
+    single: { bruto: 3000046, neto: 2488922 },
+    married2Kids: { bruto: 3952152, neto: 3300726 }
 };
 
-// Ganancias Tax Brackets (Art. 94 - Second Semester 2025)
+// Ganancias Tax Brackets (Art. 94 - January-June 2026)
+// Updated with 14% average increase (inflation July-December 2025)
 const GANANCIAS_BRACKETS = [
-    { from: 0, to: 1520371.67, rate: 0.05, fixed: 0 },
-    { from: 1520371.68, to: 4561114.88, rate: 0.09, fixed: 76018.58 },
-    { from: 4561114.89, to: 7601858.23, rate: 0.12, fixed: 349905.47 },
-    { from: 7601858.24, to: 10642601.46, rate: 0.15, fixed: 714994.67 },
-    { from: 10642601.47, to: 15203716.59, rate: 0.19, fixed: 1171106.15 },
-    { from: 15203716.60, to: 30407433.31, rate: 0.23, fixed: 2037717.04 },
-    { from: 30407433.32, to: 45611149.89, rate: 0.27, fixed: 5534571.88 },
-    { from: 45611149.90, to: 60814866.61, rate: 0.31, fixed: 9639576.11 },
-    { from: 60814866.62, to: Infinity, rate: 0.35, fixed: 14353728.21 }
+    { from: 0, to: 1733224, rate: 0.05, fixed: 0 },
+    { from: 1733224.01, to: 5199671, rate: 0.09, fixed: 86661 },
+    { from: 5199671.01, to: 8666118, rate: 0.12, fixed: 398702 },
+    { from: 8666118.01, to: 12132565, rate: 0.15, fixed: 814694 },
+    { from: 12132565.01, to: 17332236, rate: 0.19, fixed: 1334800 },
+    { from: 17332236.01, to: 34664472, rate: 0.23, fixed: 2322977 },
+    { from: 34664472.01, to: 51996708, rate: 0.27, fixed: 6309412 },
+    { from: 51996708.01, to: 69328944, rate: 0.31, fixed: 10989117 },
+    { from: 69328944.01, to: Infinity, rate: 0.35, fixed: 16363250 }
 ];
 
-// Autónomos Categories (January 2026 - approximate)
+// Autónomos Categories (January 2026)
+// Updated with official ARCA values (2.47% increase vs December 2025)
 const AUTONOMOS_CATEGORIES = [
-    { category: 'I', amount: 59300 },
-    { category: 'II', amount: 83000 },
-    { category: 'III', amount: 118500 },
-    { category: 'IV', amount: 189600 },
-    { category: 'V', amount: 260700 }
+    { category: 'I', amount: 62743.08 },
+    { category: 'II', amount: 85048 },
+    { category: 'III', amount: 121426 },
+    { category: 'IV', amount: 194281 },
+    { category: 'V', amount: 267137 }
 ];
 
 // =============================================================================
