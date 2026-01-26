@@ -4,6 +4,14 @@
  */
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+const USD_ANNUAL_QUOTA = 12000; // USD annual quota without pesification
+const USD_MONTHLY_QUOTA = USD_ANNUAL_QUOTA / 12; // $1,000 per month
+const DEFAULT_EXCHANGE_RATE = 1000; // Default ARS/USD exchange rate
+
+// =============================================================================
 // DOM Elements
 // =============================================================================
 
@@ -294,7 +302,7 @@ function handleCalculate() {
         
         // Get or estimate exchange rate
         const customRate = parseCurrency(formElements.exchangeRate.value);
-        exchangeRate = customRate > 0 ? customRate : 1000; // Default to 1000 if not specified
+        exchangeRate = customRate > 0 ? customRate : DEFAULT_EXCHANGE_RATE;
         
         // Convert USD to ARS based on payment method
         incomeARS = calculateARSIncome(incomeUSD, exchangeRate, paymentMethod, workModality, useUsdQuota);
@@ -385,27 +393,18 @@ function calculateARSIncome(usd, exchangeRate, paymentMethod, workModality, useU
         case 'crypto':
             // Foreign account or crypto - can keep in USD (up to quota)
             // Still need to declare and pay taxes on ARS equivalent
-            if (useUsdQuota) {
-                // Using the $12,000 annual quota ($1,000/month)
-                const quotaMonthly = 1000;
-                if (usd <= quotaMonthly) {
-                    // Within quota - can keep in USD, but still taxed at official rate
-                    arsIncome = usd * exchangeRate;
-                } else {
-                    // Exceeds quota - must pesify the excess
-                    arsIncome = (quotaMonthly * exchangeRate) + ((usd - quotaMonthly) * exchangeRate);
-                }
+            if (useUsdQuota && usd > USD_MONTHLY_QUOTA) {
+                // Exceeds quota - but all taxed at same rate so simplified
+                arsIncome = usd * exchangeRate;
             } else {
-                // Not using quota - all income in USD taxed at official rate
+                // Within quota or not using quota - all taxed at official rate
                 arsIncome = usd * exchangeRate;
             }
             break;
             
         case 'mixed':
-            // Mixed - assume 50% pesified, 50% kept abroad
-            const pesified = usd * 0.5 * exchangeRate;
-            const kept = usd * 0.5 * exchangeRate; // Still taxed even if kept abroad
-            arsIncome = pesified + kept;
+            // Mixed - all income still taxed at official rate regardless of where kept
+            arsIncome = usd * exchangeRate;
             break;
             
         default:
@@ -765,6 +764,16 @@ function loadSavedData() {
             if (data.income) formElements.income.value = data.income.toLocaleString('es-AR');
             if (data.activityType) formElements.activityType.value = data.activityType;
             if (data.familySituation) formElements.familySituation.value = data.familySituation;
+            
+            // Restore USD-related fields
+            if (data.currency) {
+                formElements.currency.value = data.currency;
+                handleCurrencyChange(); // Trigger currency change to show/hide USD fields
+            }
+            if (data.workModality) formElements.workModality.value = data.workModality;
+            if (data.paymentMethod) formElements.paymentMethod.value = data.paymentMethod;
+            if (data.useUsdQuota !== undefined) formElements.useUsdQuota.checked = data.useUsdQuota;
+            if (data.exchangeRate) formElements.exchangeRate.value = data.exchangeRate.toLocaleString('es-AR');
             
             if (data.deductions) {
                 if (data.deductions.rent) formElements.rent.value = data.deductions.rent.toLocaleString('es-AR');
