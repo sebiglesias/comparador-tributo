@@ -1,0 +1,47 @@
+# Cloudflare Pages Headers Configuration
+# https://developers.cloudflare.com/pages/platform/headers/
+
+# Security and Performance Headers for all pages
+/*
+  # Security Headers
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  X-XSS-Protection: 1; mode=block
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), microphone=(), camera=()
+  
+  # Cache Control
+  Cache-Control: public, max-age=3600, must-revalidate
+
+# Service Worker - Cache for 1 hour but revalidate
+/sw.js
+  Cache-Control: public, max-age=3600, must-revalidate
+  Content-Type: application/javascript
+
+# Manifest - Cache for 1 day
+/manifest.json
+  Cache-Control: public, max-age=86400
+  Content-Type: application/manifest+json
+
+# JavaScript files - Cache for 1 week
+/*.js
+  Cache-Control: public, max-age=604800, immutable
+  Content-Type: application/javascript
+
+# CSS files - Cache for 1 week
+/*.css
+  Cache-Control: public, max-age=604800, immutable
+  Content-Type: text/css
+
+# Images and Icons - Cache for 1 month
+/icons/*
+  Cache-Control: public, max-age=2592000, immutable
+
+# HTML - Shorter cache, always revalidate
+/*.html
+  Cache-Control: public, max-age=3600, must-revalidate
+  Content-Type: text/html; charset=utf-8
+
+# Root index - Always fresh
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate

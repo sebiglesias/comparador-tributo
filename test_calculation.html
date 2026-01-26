@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head><title>Test</title></head>
+<body>
+<h1>Testing Currency Parsing</h1>
+<script src="calculator.js"></script>
+<script>
+console.log("Test 1 - parseCurrency('2000000'):", parseCurrency('2000000'));
+console.log("Test 2 - parseCurrency('2.000.000'):", parseCurrency('2.000.000'));
+console.log("Test 3 - formatCurrency(2000000):", formatCurrency(2000000));
+console.log("Test 4 - formatCurrency(220000):", formatCurrency(220000));
+
+// Test calculation
+const result = calculateMonotributo(2000000, 'services');
+console.log("Monotributo result:", result);
+console.log("Formatted net income:", formatCurrency(result.netIncome));
+</script>
+</body>
+</html>

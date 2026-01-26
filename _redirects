@@ -1,0 +1,8 @@
+# Cloudflare Pages Redirects Configuration
+# https://developers.cloudflare.com/pages/platform/redirects/
+
+# Redirect root to index.html (SPA support)
+/ /index.html 200
+
+# Handle 404s by serving index.html (for client-side routing if needed in future)
+/* /index.html 200
