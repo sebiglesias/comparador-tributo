@@ -86,21 +86,73 @@ body {
     padding: 0 var(--spacing-md);
 }
 
-.content-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 300px;
+/* Quick Settings Bar (previously sidebar) */
+.quick-settings-bar {
+    background: var(--card-bg);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-md);
+    margin: var(--spacing-lg) 0;
+    box-shadow: var(--shadow-sm);
+}
+
+.settings-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     gap: var(--spacing-lg);
+    flex-wrap: wrap;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md);
+}
+
+.settings-item h3 {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.settings-item label {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-xs);
+    margin: 0;
+    cursor: pointer;
+}
+
+.references-compact {
+    flex: 1;
+}
+
+.reference-links-compact {
+    display: flex;
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+}
+
+.reference-links-compact a {
+    color: var(--primary-color);
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: var(--radius-sm);
+    background: var(--secondary-color);
+    font-size: 0.9rem;
+    transition: background var(--transition-fast);
+}
+
+.reference-links-compact a:hover {
+    background: var(--border-color);
+}
+
+.content-wrapper {
     margin-top: var(--spacing-lg);
 }
 
 .main-content {
-    min-width: 0;
-}
-
-.sidebar {
-    position: sticky;
-    top: var(--spacing-lg);
-    height: fit-content;
+    width: 100%;
+    max-width: 100%;
 }
 
 /* =============================================================================
@@ -447,42 +499,132 @@ header .subtitle {
 }
 
 /* =============================================================================
-   Charts
+   Charts - Full Width Design
    ============================================================================= */
-.charts-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: var(--spacing-lg);
+.charts-container-full {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xl);
     margin-bottom: var(--spacing-lg);
 }
 
-.chart-box {
-    background: var(--secondary-color);
-    padding: var(--spacing-md);
+.chart-box-full {
+    background: var(--card-bg);
+    padding: var(--spacing-lg);
     border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.chart-box-full h3 {
+    margin-bottom: var(--spacing-md);
+    color: var(--primary-color);
+    font-size: 1.5rem;
     text-align: center;
 }
 
-.chart-box h3 {
-    margin-bottom: var(--spacing-md);
-    color: var(--primary-color);
+.chart-box-full h4 {
+    margin-bottom: var(--spacing-sm);
+    color: var(--text-color);
+    font-size: 1.1rem;
+    text-align: center;
 }
 
-#bar-chart {
-    max-width: 100%;
-    height: 300px;
+.chart-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 400px;
+    max-height: 600px;
 }
 
-#pie-charts-container {
+.chart-wrapper canvas {
+    max-height: 500px;
+}
+
+.chart-info {
+    margin-top: var(--spacing-md);
+    padding: var(--spacing-md);
+    background: var(--secondary-color);
+    border-radius: var(--radius-md);
+    border-left: 4px solid var(--primary-color);
+}
+
+.chart-info p {
+    margin: 0;
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+/* Pie Charts Grid */
+.pie-charts-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: var(--spacing-lg);
+    margin-top: var(--spacing-md);
+}
+
+.pie-chart-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.pie-chart-item .chart-wrapper {
+    min-height: 300px;
+    max-height: 400px;
+}
+
+/* Scenarios Summary */
+.scenarios-summary {
+    margin-top: var(--spacing-lg);
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: var(--spacing-md);
 }
 
-.pie-chart {
-    width: 150px;
-    height: 150px;
-    margin: 0 auto;
+.scenario-card {
+    background: var(--secondary-color);
+    padding: var(--spacing-md);
+    border-radius: var(--radius-md);
+    border-left: 4px solid;
+}
+
+.scenario-card.low {
+    border-color: #17A2B8;
+}
+
+.scenario-card.medium {
+    border-color: var(--success-color);
+}
+
+.scenario-card.high {
+    border-color: var(--warning-color);
+}
+
+.scenario-card.very-high {
+    border-color: var(--danger-color);
+}
+
+.scenario-card h4 {
+    margin-bottom: var(--spacing-sm);
+    font-size: 1.1rem;
+}
+
+.scenario-card .scenario-income {
+    font-weight: 600;
+    font-size: 1.2rem;
+    margin-bottom: var(--spacing-xs);
+}
+
+.scenario-card .scenario-best {
+    color: var(--success-color);
+    font-weight: 600;
+    margin-top: var(--spacing-xs);
+}
+
+.scenario-card .scenario-detail {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    margin-top: var(--spacing-xs);
 }
 
 /* =============================================================================
@@ -702,8 +844,12 @@ header .subtitle {
 }
 
 /* =============================================================================
-   Sidebar
+   Sidebar (Legacy - now unused)
    ============================================================================= */
+.sidebar {
+    display: none; /* Moved to quick-settings-bar */
+}
+
 .sidebar-card {
     margin-bottom: var(--spacing-md);
 }
@@ -834,17 +980,21 @@ footer {
    Responsive Design
    ============================================================================= */
 @media (max-width: 1024px) {
-    .content-wrapper {
+    .quick-settings-bar {
+        padding: var(--spacing-sm);
+    }
+    
+    .settings-content {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .reference-links-compact {
+        flex-direction: column;
+    }
+    
+    .pie-charts-grid {
         grid-template-columns: 1fr;
-    }
-    
-    .sidebar {
-        position: static;
-        order: 2;
-    }
-    
-    .ad-sidebar {
-        display: none;
     }
 }
 
@@ -876,7 +1026,11 @@ footer {
         grid-template-columns: 1fr;
     }
     
-    #pie-charts-container {
+    .chart-wrapper {
+        min-height: 300px;
+    }
+    
+    .scenarios-summary {
         grid-template-columns: 1fr;
     }
     
@@ -923,7 +1077,7 @@ footer {
    ============================================================================= */
 @media print {
     .ad-space,
-    .sidebar,
+    .quick-settings-bar,
     .action-buttons,
     header,
     footer,

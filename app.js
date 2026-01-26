@@ -22,6 +22,32 @@ let resultsCache = null;
 // Initialization
 // =============================================================================
 
+/**
+ * Collect all form data for chart generation
+ */
+function collectFormData() {
+    const income = parseCurrency(formElements.income.value);
+    const activityType = formElements.activityType.value;
+    const familySituation = formElements.familySituation.value;
+    
+    // Get deductions
+    const deductions = {
+        rent: parseCurrency(formElements.rent.value) || 0,
+        healthInsurance: parseCurrency(formElements.healthInsurance.value) || 0,
+        domesticService: parseCurrency(formElements.domesticService.value) || 0,
+        education: parseCurrency(formElements.education.value) || 0,
+        vatPurchases: parseCurrency(formElements.vatPurchases.value) || 0,
+        otherExpenses: parseCurrency(formElements.otherExpenses.value) || 0
+    };
+    
+    return {
+        income,
+        activityType,
+        familySituation,
+        deductions
+    };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initializeFormElements();
     setupEventListeners();
@@ -88,8 +114,16 @@ function setupEventListeners() {
     // Share button
     document.getElementById('share-btn')?.addEventListener('click', handleShare);
     
-    // Dark mode toggle
-    document.getElementById('dark-mode-toggle')?.addEventListener('change', toggleDarkMode);
+    // Dark mode toggle (both old and new)
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeToggleTop = document.getElementById('dark-mode-toggle-top');
+    
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('change', toggleDarkMode);
+    }
+    if (darkModeToggleTop) {
+        darkModeToggleTop.addEventListener('change', toggleDarkMode);
+    }
 }
 
 /**
@@ -602,10 +636,15 @@ function drawCharts(results) {
         }
     };
     
-    drawBarChart('bar-chart', barData);
-    
-    // Pie charts
-    createPieCharts(results);
+    // Display charts using new Chart.js implementation
+    const inputData = collectFormData();
+    createAllCharts(
+        results,
+        inputData.income,
+        inputData.familySituation,
+        inputData.activityType,
+        inputData.deductions
+    );
 }
 
 /**
@@ -835,12 +874,13 @@ function handleShare() {
  */
 function initializeDarkMode() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
-    if (!darkModeToggle) return;
+    const darkModeToggleTop = document.getElementById('dark-mode-toggle-top');
     
     const savedMode = localStorage.getItem('darkMode');
     if (savedMode === 'enabled') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        darkModeToggle.checked = true;
+        if (darkModeToggle) darkModeToggle.checked = true;
+        if (darkModeToggleTop) darkModeToggleTop.checked = true;
     }
 }
 
@@ -848,11 +888,18 @@ function initializeDarkMode() {
  * Toggle dark mode
  */
 function toggleDarkMode(e) {
-    if (e.target.checked) {
+    const isDark = e.target.checked;
+    if (isDark) {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('darkMode', 'enabled');
     } else {
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('darkMode', 'disabled');
     }
+    
+    // Sync both toggles
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeToggleTop = document.getElementById('dark-mode-toggle-top');
+    if (darkModeToggle) darkModeToggle.checked = isDark;
+    if (darkModeToggleTop) darkModeToggleTop.checked = isDark;
 }
