@@ -1,0 +1,11 @@
+# Git files
+.git/
+
+# Wrangler temp files
+.wrangler/
+
+# Documentation and development files
+README.md
+CLOUDFLARE_DEPLOYMENT.md
+deployment-structure.txt
+test_calculation.html
