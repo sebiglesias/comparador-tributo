@@ -385,7 +385,11 @@ function handleCalculate() {
         currency,
         workModality,
         paymentMethod,
-        useUsdQuota
+        useUsdQuota,
+        familySituation,
+        activityType,
+        deductions,
+        businessExpenses
     };
     
     // Display results
@@ -617,34 +621,18 @@ function fillComparisonTable(results) {
  * Draw all charts
  */
 function drawCharts(results) {
-    // Bar chart
-    const barData = {
-        relacion: {
-            net: results.relacion.netSalary,
-            tax: results.relacion.contributions.total + results.relacion.ganancias,
-            gross: results.relacion.grossSalary
-        },
-        monotributo: {
-            net: results.monotributo.netIncome,
-            tax: results.monotributo.monthlyFee,
-            gross: results.income
-        },
-        responsable: {
-            net: results.responsable.netIncome,
-            tax: results.responsable.taxes.total,
-            gross: results.responsable.monthlyIncome
-        }
-    };
-    
-    // Display charts using new Chart.js implementation
-    const inputData = collectFormData();
-    createAllCharts(
-        results,
-        inputData.income,
-        inputData.familySituation,
-        inputData.activityType,
-        inputData.deductions
-    );
+    // Prepare data in the format Chart.js functions expect
+    try {
+        createAllCharts(
+            results,
+            results.income || 0,
+            results.familySituation || 'single',
+            results.activityType || 'services',
+            results.deductions || {}
+        );
+    } catch (error) {
+        console.error('Error creating charts:', error);
+    }
 }
 
 /**
