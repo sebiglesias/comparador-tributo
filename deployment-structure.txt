@@ -1,0 +1,36 @@
+📦 comparador-tributo/
+├── 📄 index.html              # Aplicación principal
+├── 🎨 styles.css              # Estilos responsive
+├── 🧮 calculator.js           # Motor de cálculos
+├── 📊 charts.js               # Visualizaciones
+├── ⚙️ app.js                  # Lógica de aplicación
+├── 📱 manifest.json           # PWA manifest
+├── 🔧 sw.js                   # Service Worker
+│
+├── ☁️ ARCHIVOS CLOUDFLARE PAGES (NUEVOS):
+├── 📋 _headers                # Headers HTTP (seguridad + cache)
+├── 🔀 _redirects              # Routing SPA
+├── ⚙️ wrangler.toml           # Configuración Cloudflare
+├── 🔢 .nvmrc                  # Node version (18)
+├── 📖 CLOUDFLARE_DEPLOYMENT.md # Guía completa
+│
+├── 📂 icons/                  # Íconos PWA
+│   ├── icon-72x72.png
+│   ├── icon-192x192.png
+│   ├── icon-512x512.png
+│   └── favicon.png
+│
+├── 📝 README.md               # Documentación (actualizado)
+└── 🚫 .gitignore             # Archivos ignorados
+
+═══════════════════════════════════════════════════════════
+🚀 DEPLOYMENT EN 3 PASOS:
+
+1️⃣ Conectar GitHub → Cloudflare Pages
+2️⃣ Config: Framework = None, Build dir = /
+3️⃣ Deploy! → https://comparador-tributo.pages.dev
+
+✅ SSL automático
+✅ CDN global
+✅ 100% GRATIS
+═══════════════════════════════════════════════════════════
