@@ -3,7 +3,7 @@
  * Provides offline functionality and caching
  */
 
-const CACHE_NAME = 'comparador-tributo-v1';
+const CACHE_NAME = 'comparador-tributo-v2-treemap';
 const urlsToCache = [
     '/',
     '/index.html',
@@ -12,6 +12,12 @@ const urlsToCache = [
     '/charts.js',
     '/app.js',
     '/manifest.json'
+];
+
+// Don't cache external CDN resources - always fetch from network
+const CDN_URLS = [
+    'https://cdn.jsdelivr.net',
+    'https://unpkg.com'
 ];
 
 // Install event - cache resources
@@ -30,6 +36,14 @@ self.addEventListener('install', event => {
 
 // Fetch event - serve from cache, fallback to network
 self.addEventListener('fetch', event => {
+    const url = event.request.url;
+    
+    // Always fetch CDN resources from network (don't cache external libraries)
+    if (CDN_URLS.some(cdn => url.startsWith(cdn))) {
+        event.respondWith(fetch(event.request));
+        return;
+    }
+    
     event.respondWith(
         caches.match(event.request)
             .then(response => {

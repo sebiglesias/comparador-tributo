@@ -22,6 +22,32 @@ let resultsCache = null;
 // Initialization
 // =============================================================================
 
+/**
+ * Collect all form data for chart generation
+ */
+function collectFormData() {
+    const income = parseCurrency(formElements.income.value);
+    const activityType = formElements.activityType.value;
+    const familySituation = formElements.familySituation.value;
+    
+    // Get deductions
+    const deductions = {
+        rent: parseCurrency(formElements.rent.value) || 0,
+        healthInsurance: parseCurrency(formElements.healthInsurance.value) || 0,
+        domesticService: parseCurrency(formElements.domesticService.value) || 0,
+        education: parseCurrency(formElements.education.value) || 0,
+        vatPurchases: parseCurrency(formElements.vatPurchases.value) || 0,
+        otherExpenses: parseCurrency(formElements.otherExpenses.value) || 0
+    };
+    
+    return {
+        income,
+        activityType,
+        familySituation,
+        deductions
+    };
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     initializeFormElements();
     setupEventListeners();
@@ -88,8 +114,16 @@ function setupEventListeners() {
     // Share button
     document.getElementById('share-btn')?.addEventListener('click', handleShare);
     
-    // Dark mode toggle
-    document.getElementById('dark-mode-toggle')?.addEventListener('change', toggleDarkMode);
+    // Dark mode toggle (both old and new)
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeToggleTop = document.getElementById('dark-mode-toggle-top');
+    
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('change', toggleDarkMode);
+    }
+    if (darkModeToggleTop) {
+        darkModeToggleTop.addEventListener('change', toggleDarkMode);
+    }
 }
 
 /**
@@ -351,7 +385,11 @@ function handleCalculate() {
         currency,
         workModality,
         paymentMethod,
-        useUsdQuota
+        useUsdQuota,
+        familySituation,
+        activityType,
+        deductions,
+        businessExpenses
     };
     
     // Display results
@@ -583,29 +621,18 @@ function fillComparisonTable(results) {
  * Draw all charts
  */
 function drawCharts(results) {
-    // Bar chart
-    const barData = {
-        relacion: {
-            net: results.relacion.netSalary,
-            tax: results.relacion.contributions.total + results.relacion.ganancias,
-            gross: results.relacion.grossSalary
-        },
-        monotributo: {
-            net: results.monotributo.netIncome,
-            tax: results.monotributo.monthlyFee,
-            gross: results.income
-        },
-        responsable: {
-            net: results.responsable.netIncome,
-            tax: results.responsable.taxes.total,
-            gross: results.responsable.monthlyIncome
-        }
-    };
-    
-    drawBarChart('bar-chart', barData);
-    
-    // Pie charts
-    createPieCharts(results);
+    // Prepare data in the format Chart.js functions expect
+    try {
+        createAllCharts(
+            results,
+            results.income || 0,
+            results.familySituation || 'single',
+            results.activityType || 'services',
+            results.deductions || {}
+        );
+    } catch (error) {
+        console.error('Error creating charts:', error);
+    }
 }
 
 /**
@@ -835,12 +862,13 @@ function handleShare() {
  */
 function initializeDarkMode() {
     const darkModeToggle = document.getElementById('dark-mode-toggle');
-    if (!darkModeToggle) return;
+    const darkModeToggleTop = document.getElementById('dark-mode-toggle-top');
     
     const savedMode = localStorage.getItem('darkMode');
     if (savedMode === 'enabled') {
         document.documentElement.setAttribute('data-theme', 'dark');
-        darkModeToggle.checked = true;
+        if (darkModeToggle) darkModeToggle.checked = true;
+        if (darkModeToggleTop) darkModeToggleTop.checked = true;
     }
 }
 
@@ -848,11 +876,18 @@ function initializeDarkMode() {
  * Toggle dark mode
  */
 function toggleDarkMode(e) {
-    if (e.target.checked) {
+    const isDark = e.target.checked;
+    if (isDark) {
         document.documentElement.setAttribute('data-theme', 'dark');
         localStorage.setItem('darkMode', 'enabled');
     } else {
         document.documentElement.removeAttribute('data-theme');
         localStorage.setItem('darkMode', 'disabled');
     }
+    
+    // Sync both toggles
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeToggleTop = document.getElementById('dark-mode-toggle-top');
+    if (darkModeToggle) darkModeToggle.checked = isDark;
+    if (darkModeToggleTop) darkModeToggleTop.checked = isDark;
 }

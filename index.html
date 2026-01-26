@@ -18,6 +18,10 @@
     <title>Calculadora Monotributo vs Responsable Inscripto vs Relación Dependencia Argentina 2026</title>
     
     <link rel="stylesheet" href="styles.css">
+    <!-- Chart.js - Librería de gráficos dinámica e interactiva -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Chart.js Treemap Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-treemap@2.3.1/dist/chartjs-chart-treemap.min.js"></script>
 </head>
 <body>
     <!-- Header Ad Space -->
@@ -33,6 +37,27 @@
     </header>
 
     <main class="container">
+        <!-- Quick Settings Bar (previously sidebar) -->
+        <aside class="quick-settings-bar">
+            <div class="settings-content">
+                <div class="settings-item">
+                    <h3>⚙️ Configuración</h3>
+                    <label for="dark-mode-toggle-top">
+                        <input type="checkbox" id="dark-mode-toggle-top" class="toggle-switch">
+                        Modo oscuro
+                    </label>
+                </div>
+                <div class="settings-item references-compact">
+                    <h3>📚 Referencias</h3>
+                    <div class="reference-links-compact">
+                        <a href="https://www.afip.gob.ar/monotributo/categorias.asp" target="_blank" rel="noopener">ARCA Monotributo</a>
+                        <a href="https://www.arca.gob.ar/autonomos/categorias-y-aportes/" target="_blank" rel="noopener">ARCA Autónomos</a>
+                        <a href="https://www.arca.gob.ar/gananciasYBienes/ganancias/personas-humanas-sucesiones-indivisas/deducciones/deducciones-personales.asp" target="_blank" rel="noopener">Deducciones</a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
         <div class="content-wrapper">
             <!-- Main Content -->
             <div class="main-content">
@@ -236,15 +261,57 @@
                         </table>
                     </div>
 
-                    <!-- Visual Charts -->
-                    <div class="charts-container">
-                        <div class="chart-box">
-                            <h3>Ingreso Neto vs Impuestos</h3>
-                            <canvas id="bar-chart"></canvas>
+                    <!-- Visual Charts - Full Width Stacked -->
+                    <div class="charts-container-full">
+                        <div class="chart-box-full">
+                            <h3>📊 Comparación de Ingreso Neto vs Impuestos</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="bar-chart"></canvas>
+                            </div>
                         </div>
-                        <div class="chart-box">
-                            <h3>Distribución de Carga Tributaria</h3>
-                            <div id="pie-charts-container"></div>
+                        
+                        <div class="chart-box-full">
+                            <h3>📈 Proyección: ¿Cómo cambia tu ingreso neto con diferentes sueldos?</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="line-chart"></canvas>
+                            </div>
+                            <div class="chart-info">
+                                <p>💡 Este gráfico muestra cómo varía tu ingreso neto en cada régimen según diferentes niveles de ingresos brutos.</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-box-full">
+                            <h3>📊 Distribución de Carga Tributaria por Régimen</h3>
+                            <div class="pie-charts-grid">
+                                <div class="pie-chart-item">
+                                    <h4>Relación de Dependencia</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="pie-chart-relacion"></canvas>
+                                    </div>
+                                </div>
+                                <div class="pie-chart-item">
+                                    <h4>Monotributo</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="pie-chart-monotributo"></canvas>
+                                    </div>
+                                </div>
+                                <div class="pie-chart-item">
+                                    <h4>Responsable Inscripto</h4>
+                                    <div class="chart-wrapper">
+                                        <canvas id="pie-chart-responsable"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="chart-box-full">
+                            <h3>💰 Comparación de Escenarios: Diferentes Niveles de Ingreso</h3>
+                            <div class="chart-wrapper">
+                                <canvas id="scenarios-chart"></canvas>
+                            </div>
+                            <div class="scenarios-summary" id="scenarios-summary">
+                                <!-- Populated by JavaScript -->
+                            </div>
                         </div>
                     </div>
 
@@ -391,35 +458,6 @@
                     </div>
                 </section>
             </div>
-
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <!-- Sidebar Ad Space -->
-                <div class="ad-space ad-sidebar" aria-label="Espacio publicitario">
-                    <div class="ad-placeholder">Publicidad 300x600</div>
-                </div>
-
-                <!-- Quick Links -->
-                <div class="card sidebar-card">
-                    <h3>📚 Referencias Legales</h3>
-                    <ul class="reference-links">
-                        <li><a href="https://www.afip.gob.ar/monotributo/categorias.asp" target="_blank" rel="noopener">ARCA - Categorías Monotributo</a></li>
-                        <li><a href="https://www.arca.gob.ar/autonomos/categorias-y-aportes/" target="_blank" rel="noopener">ARCA - Autónomos</a></li>
-                        <li><a href="https://www.arca.gob.ar/gananciasYBienes/ganancias/personas-humanas-sucesiones-indivisas/deducciones/deducciones-personales.asp" target="_blank" rel="noopener">Deducciones Ganancias</a></li>
-                        <li><a href="https://www.argentina.gob.ar/normativa/nacional/ley-27743" target="_blank" rel="noopener">Ley 27.743 Monotributo</a></li>
-                        <li><a href="https://www.argentina.gob.ar/normativa/nacional/ley-20628-281" target="_blank" rel="noopener">Ley 20.628 Ganancias</a></li>
-                    </ul>
-                </div>
-
-                <!-- Theme Toggle -->
-                <div class="card sidebar-card">
-                    <h3>⚙️ Configuración</h3>
-                    <div class="setting-item">
-                        <label for="dark-mode-toggle">Modo oscuro</label>
-                        <input type="checkbox" id="dark-mode-toggle" class="toggle-switch">
-                    </div>
-                </div>
-            </aside>
         </div>
 
         <!-- Footer Ad Space -->
