@@ -1,0 +1,18 @@
+# Git files
+.git/
+.gitignore
+
+# Wrangler temp files
+.wrangler/
+
+# Documentation and development files
+README.md
+CLOUDFLARE_DEPLOYMENT.md
+deployment-structure.txt
+test_calculation.html
+
+# Version control
+.nvmrc
+
+# Configuration files
+wrangler.toml
