@@ -4,6 +4,14 @@
  */
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+const USD_ANNUAL_QUOTA = 12000; // USD annual quota without pesification
+const USD_MONTHLY_QUOTA = USD_ANNUAL_QUOTA / 12; // $1,000 per month
+const DEFAULT_EXCHANGE_RATE = 1000; // Default ARS/USD exchange rate
+
+// =============================================================================
 // DOM Elements
 // =============================================================================
 
@@ -29,6 +37,11 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function initializeFormElements() {
     formElements = {
+        currency: document.getElementById('currency'),
+        workModality: document.getElementById('work-modality'),
+        paymentMethod: document.getElementById('payment-method'),
+        useUsdQuota: document.getElementById('use-usd-quota'),
+        exchangeRate: document.getElementById('exchange-rate'),
         income: document.getElementById('income'),
         activityType: document.getElementById('activity-type'),
         familySituation: document.getElementById('family-situation'),
@@ -52,6 +65,15 @@ function initializeFormElements() {
 function setupEventListeners() {
     // Calculate button
     formElements.calculateBtn.addEventListener('click', handleCalculate);
+    
+    // Currency change
+    formElements.currency.addEventListener('change', handleCurrencyChange);
+    
+    // Work modality change
+    formElements.workModality.addEventListener('change', handleWorkModalityChange);
+    
+    // Payment method change
+    formElements.paymentMethod.addEventListener('change', handlePaymentMethodChange);
     
     // Family situation change
     formElements.familySituation.addEventListener('change', (e) => {
@@ -81,6 +103,79 @@ function setupExpandableSections() {
             section.classList.toggle('expanded');
         });
     });
+}
+
+// =============================================================================
+// Currency and Work Modality Handlers
+// =============================================================================
+
+/**
+ * Handle currency change
+ */
+function handleCurrencyChange() {
+    const isUSD = formElements.currency.value === 'USD';
+    
+    // Show/hide USD-specific fields
+    document.getElementById('work-modality-group').style.display = isUSD ? 'block' : 'none';
+    document.getElementById('payment-method-group').style.display = isUSD ? 'block' : 'none';
+    document.getElementById('usd-quota-group').style.display = isUSD ? 'block' : 'none';
+    document.getElementById('exchange-rate-group').style.display = isUSD ? 'block' : 'none';
+    
+    // Update income label
+    const incomeLabel = document.getElementById('income-label');
+    incomeLabel.textContent = isUSD 
+        ? 'Ingreso mensual bruto deseado (USD)' 
+        : 'Ingreso mensual bruto deseado (ARS)';
+    
+    // Update placeholder
+    formElements.income.placeholder = isUSD ? 'Ej: 3000' : 'Ej: 1000000';
+    
+    // Clear income field
+    formElements.income.value = '';
+    
+    // Set default work modality to foreign-contractor if USD and trigger info display
+    if (isUSD) {
+        formElements.workModality.value = 'foreign-contractor';
+        handleWorkModalityChange();
+    }
+}
+
+/**
+ * Handle work modality change
+ */
+function handleWorkModalityChange() {
+    const modality = formElements.workModality.value;
+    const modalityInfo = document.getElementById('modality-info');
+    const modalityDescription = document.getElementById('modality-description');
+    
+    const descriptions = {
+        'formal-employee': '✓ Contrato bajo ley argentina | Sueldo pesificado al oficial | Aportes y contribuciones tradicionales | Todos los beneficios laborales (aguinaldo, vacaciones, etc.)',
+        'foreign-contractor': '⚠️ Contrato como independent contractor | Facturación como monotributo o responsable inscripto | Obligación de emitir Factura E | Zona gris legal (no es técnicamente relación de dependencia)',
+        'freelancer': '✓ Múltiples clientes | Monotributo o Responsable Inscripto | Factura E por exportación de servicios | Exportación genuina de servicios profesionales'
+    };
+    
+    if (descriptions[modality]) {
+        modalityDescription.textContent = descriptions[modality];
+        modalityInfo.style.display = 'block';
+    } else {
+        modalityInfo.style.display = 'none';
+    }
+}
+
+/**
+ * Handle payment method change
+ */
+function handlePaymentMethodChange() {
+    const method = formElements.paymentMethod.value;
+    const quotaGroup = document.getElementById('usd-quota-group');
+    
+    // USD quota only applicable for foreign account or crypto
+    if (method === 'foreign-account' || method === 'crypto') {
+        quotaGroup.style.display = 'block';
+    } else {
+        quotaGroup.style.display = 'none';
+        formElements.useUsdQuota.checked = false;
+    }
 }
 
 /**
@@ -179,7 +274,8 @@ function formatCurrencyInputs() {
  */
 function handleCalculate() {
     // Get form data
-    const income = parseCurrency(formElements.income.value);
+    let income = parseCurrency(formElements.income.value);
+    const currency = formElements.currency.value;
     const activityType = formElements.activityType.value;
     const familySituation = formElements.familySituation.value;
     
@@ -188,6 +284,28 @@ function handleCalculate() {
         alert('Por favor ingresá un monto de ingreso válido');
         formElements.income.focus();
         return;
+    }
+    
+    // Handle USD conversion
+    let incomeARS = income;
+    let incomeUSD = null;
+    let exchangeRate = null;
+    let workModality = null;
+    let paymentMethod = null;
+    let useUsdQuota = false;
+    
+    if (currency === 'USD') {
+        incomeUSD = income;
+        workModality = formElements.workModality.value;
+        paymentMethod = formElements.paymentMethod.value;
+        useUsdQuota = formElements.useUsdQuota.checked;
+        
+        // Get or estimate exchange rate
+        const customRate = parseCurrency(formElements.exchangeRate.value);
+        exchangeRate = customRate > 0 ? customRate : DEFAULT_EXCHANGE_RATE;
+        
+        // Convert USD to ARS based on payment method
+        incomeARS = calculateARSIncome(incomeUSD, exchangeRate, paymentMethod, workModality, useUsdQuota);
     }
     
     // Get custom family data if applicable
@@ -208,21 +326,92 @@ function handleCalculate() {
         otherExpenses: parseCurrency(formElements.otherExpenses.value)
     };
     
-    // Calculate all regimes
-    const monotributo = calculateMonotributo(income, activityType);
-    const relacion = calculateRelacionDependencia(income, familySituation, deductions, customSpouse, customChildren);
-    const responsable = calculateResponsableInscripto(income, activityType, familySituation, deductions, businessExpenses, customSpouse, customChildren);
+    // Calculate all regimes based on work modality
+    let monotributo, relacion, responsable;
     
-    resultsCache = { monotributo, relacion, responsable, income };
+    if (currency === 'USD' && workModality === 'formal-employee') {
+        // For formal employees, only show relación de dependencia
+        relacion = calculateRelacionDependencia(incomeARS, familySituation, deductions, customSpouse, customChildren);
+        monotributo = null;
+        responsable = null;
+    } else {
+        // Calculate all regimes
+        monotributo = calculateMonotributo(incomeARS, activityType);
+        relacion = calculateRelacionDependencia(incomeARS, familySituation, deductions, customSpouse, customChildren);
+        responsable = calculateResponsableInscripto(incomeARS, activityType, familySituation, deductions, businessExpenses, customSpouse, customChildren);
+    }
+    
+    resultsCache = { 
+        monotributo, 
+        relacion, 
+        responsable, 
+        income: incomeARS,
+        incomeUSD,
+        exchangeRate,
+        currency,
+        workModality,
+        paymentMethod,
+        useUsdQuota
+    };
     
     // Display results
     displayResults(resultsCache);
     
     // Save to localStorage
-    saveData({ income, activityType, familySituation, deductions, businessExpenses, customSpouse, customChildren });
+    saveData({ 
+        income, 
+        currency,
+        workModality,
+        paymentMethod,
+        useUsdQuota,
+        exchangeRate,
+        activityType, 
+        familySituation, 
+        deductions, 
+        businessExpenses, 
+        customSpouse, 
+        customChildren 
+    });
     
     // Scroll to results
     formElements.resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/**
+ * Calculate ARS income from USD based on payment method and modality
+ */
+function calculateARSIncome(usd, exchangeRate, paymentMethod, workModality, useUsdQuota) {
+    let arsIncome = 0;
+    
+    switch(paymentMethod) {
+        case 'arg-bank':
+            // Argentine bank account - pesification at official rate
+            arsIncome = usd * exchangeRate;
+            break;
+            
+        case 'foreign-account':
+        case 'crypto':
+            // Foreign account or crypto - can keep in USD (up to quota)
+            // Still need to declare and pay taxes on ARS equivalent
+            if (useUsdQuota && usd > USD_MONTHLY_QUOTA) {
+                // Exceeds quota - but all taxed at same rate so simplified
+                arsIncome = usd * exchangeRate;
+            } else {
+                // Within quota or not using quota - all taxed at official rate
+                arsIncome = usd * exchangeRate;
+            }
+            break;
+            
+        case 'mixed':
+            // Mixed - all income still taxed at official rate regardless of where kept
+            arsIncome = usd * exchangeRate;
+            break;
+            
+        default:
+            arsIncome = usd * exchangeRate;
+    }
+    
+    return Math.round(arsIncome);
 }
 
 // =============================================================================
@@ -575,6 +764,16 @@ function loadSavedData() {
             if (data.income) formElements.income.value = data.income.toLocaleString('es-AR');
             if (data.activityType) formElements.activityType.value = data.activityType;
             if (data.familySituation) formElements.familySituation.value = data.familySituation;
+            
+            // Restore USD-related fields
+            if (data.currency) {
+                formElements.currency.value = data.currency;
+                handleCurrencyChange(); // Trigger currency change to show/hide USD fields
+            }
+            if (data.workModality) formElements.workModality.value = data.workModality;
+            if (data.paymentMethod) formElements.paymentMethod.value = data.paymentMethod;
+            if (data.useUsdQuota !== undefined) formElements.useUsdQuota.checked = data.useUsdQuota;
+            if (data.exchangeRate) formElements.exchangeRate.value = data.exchangeRate.toLocaleString('es-AR');
             
             if (data.deductions) {
                 if (data.deductions.rent) formElements.rent.value = data.deductions.rent.toLocaleString('es-AR');

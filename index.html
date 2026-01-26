@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Compará cuánto pagás de impuestos en Monotributo, Responsable Inscripto o Relación de Dependencia. Calculadora actualizada 2025 con Ganancias, IVA, Autónomos.">
-    <meta name="keywords" content="monotributo vs relación de dependencia, calculadora monotributo argentina, responsable inscripto impuestos, ganancias 2025, categorías monotributo, cuánto paga un autónomo, IVA responsable inscripto">
+    <meta name="description" content="Compará cuánto pagás de impuestos en Monotributo, Responsable Inscripto o Relación de Dependencia. Calculadora actualizada 2026 con Ganancias, IVA, Autónomos.">
+    <meta name="keywords" content="monotributo vs relación de dependencia, calculadora monotributo argentina, responsable inscripto impuestos, ganancias 2026, categorías monotributo, cuánto paga un autónomo, IVA responsable inscripto">
     <meta name="author" content="Comparador Tributo">
     <meta name="theme-color" content="#0066CC">
     
@@ -15,7 +15,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/icons/favicon.png">
     
-    <title>Calculadora Monotributo vs Responsable Inscripto vs Relación Dependencia Argentina 2025</title>
+    <title>Calculadora Monotributo vs Responsable Inscripto vs Relación Dependencia Argentina 2026</title>
     
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -27,7 +27,7 @@
 
     <header>
         <div class="container">
-            <h1>🧮 Comparador de Regímenes Tributarios Argentina 2025-2026</h1>
+            <h1>🧮 Comparador de Regímenes Tributarios Argentina 2026</h1>
             <p class="subtitle">Calculá cuánto te queda en mano: Monotributo vs Relación de Dependencia vs Responsable Inscripto</p>
         </div>
     </header>
@@ -40,9 +40,65 @@
                 <section class="card" id="input-section">
                     <h2>📊 Ingresá tus datos</h2>
                     
+                    <!-- Currency and Work Modality Section -->
+                    <div class="form-group">
+                        <label for="currency">
+                            Moneda del ingreso
+                            <span class="tooltip" data-tooltip="Seleccioná la moneda en la que cobrás o facturás">ⓘ</span>
+                        </label>
+                        <select id="currency">
+                            <option value="ARS">🇦🇷 Pesos Argentinos (ARS)</option>
+                            <option value="USD">💵 Dólares Estadounidenses (USD)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="work-modality-group" style="display: none;">
+                        <label for="work-modality">
+                            Modalidad de contratación
+                            <span class="tooltip" data-tooltip="Tu situación contractual determina tus obligaciones tributarias">ⓘ</span>
+                        </label>
+                        <select id="work-modality">
+                            <option value="formal-employee">🅰️ Empleado Formal Argentino (en relación de dependencia)</option>
+                            <option value="foreign-contractor">🅱️ Contractor para empresa extranjera (zona gris)</option>
+                            <option value="freelancer">💼 Freelancer / Profesional Independiente</option>
+                        </select>
+                        <div class="info-box" id="modality-info" style="margin-top: 10px; display: none;">
+                            <small id="modality-description"></small>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="payment-method-group" style="display: none;">
+                        <label for="payment-method">
+                            Forma de cobro
+                            <span class="tooltip" data-tooltip="Cómo recibís el pago afecta la pesificación y los impuestos">ⓘ</span>
+                        </label>
+                        <select id="payment-method">
+                            <option value="arg-bank">🏦 Cuenta bancaria argentina (pesificación al oficial)</option>
+                            <option value="foreign-account">🌍 Cuenta en el exterior (sin pesificar)</option>
+                            <option value="crypto">₿ Criptomonedas (USDT, etc.)</option>
+                            <option value="mixed">🔀 Mixto (parte pesificada, parte afuera)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="usd-quota-group" style="display: none;">
+                        <label for="use-usd-quota">
+                            <input type="checkbox" id="use-usd-quota">
+                            Usar cupo de USD 12.000 anuales sin pesificar
+                            <span class="tooltip" data-tooltip="Los primeros USD 12.000 anuales pueden ingresarse sin obligación de pesificación">ⓘ</span>
+                        </label>
+                    </div>
+
+                    <div class="form-group" id="exchange-rate-group" style="display: none;">
+                        <label for="exchange-rate">
+                            Tipo de cambio USD (opcional)
+                            <span class="tooltip" data-tooltip="Dejá vacío para usar el tipo de cambio oficial actual estimado">ⓘ</span>
+                        </label>
+                        <input type="text" id="exchange-rate" placeholder="Ej: 1000 (opcional)" class="currency-input">
+                    </div>
+
                     <div class="form-group">
                         <label for="income">
-                            Ingreso mensual bruto deseado (ARS)
+                            <span id="income-label">Ingreso mensual bruto deseado (ARS)</span>
                             <span class="tooltip" data-tooltip="El monto que querés ganar o facturar por mes">ⓘ</span>
                         </label>
                         <input type="text" id="income" placeholder="Ej: 1000000" class="currency-input">
@@ -375,7 +431,7 @@
     <footer>
         <div class="container">
             <div class="disclaimer">
-                <p><strong>⚠️ Disclaimer:</strong> Esta calculadora es orientativa. Los valores pueden cambiar según actualizaciones de ARCA. Consultá con un contador matriculado para asesoramiento personalizado. <strong>Última actualización: Enero 2026.</strong></p>
+                <p><strong>⚠️ Disclaimer:</strong> Esta calculadora es orientativa. Los valores pueden cambiar según actualizaciones de ARCA. Consultá con un contador matriculado para asesoramiento personalizado. <strong>Última actualización: Febrero 2026 (Monotributo 14.3%, Ganancias Ene-Jun 2026, Autónomos Ene 2026).</strong></p>
             </div>
             <div class="footer-content">
                 <p>&copy; 2026 Comparador Tributo Argentina. Todos los derechos reservados.</p>
