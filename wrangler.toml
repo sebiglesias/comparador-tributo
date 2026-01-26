@@ -4,17 +4,9 @@
 name = "comparador-tributo"
 compatibility_date = "2024-01-01"
 
-# Pages configuration
-[env.production]
-name = "comparador-tributo"
-
-# Build configuration
-[build]
-command = ""  # No build needed - static files only
-cwd = "/"
-
-[build.upload]
-format = "service-worker"
+# Static assets configuration
+[assets]
+directory = "."
 
 # Optional: Custom domains (configure in Cloudflare dashboard)
 # [env.production.routes]
