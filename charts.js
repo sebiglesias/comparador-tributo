@@ -280,7 +280,7 @@ function drawLineChart(canvasId, currentIncome, familySituation, activityType, d
 }
 
 /**
- * Draw pie chart for tax distribution
+ * Draw treemap chart for tax distribution
  */
 function drawPieChart(canvasId, data, regime) {
     const canvas = document.getElementById(canvasId);
@@ -326,7 +326,7 @@ function drawPieChart(canvasId, data, regime) {
         colors = ['#6610F2', '#FF6B6B', '#FFD93D', '#FF8C42', '#A8E6CF'];
     }
     
-    // Filter out zero values
+    // Filter out zero values and prepare treemap data
     const filteredData = labels.map((label, index) => ({
         label,
         value: values[index],
@@ -337,36 +337,83 @@ function drawPieChart(canvasId, data, regime) {
         return;
     }
     
+    // Calculate total for percentages
+    const total = filteredData.reduce((sum, item) => sum + item.value, 0);
+    
+    // Prepare treemap dataset
+    const treemapData = filteredData.map((item, index) => ({
+        value: item.value,
+        label: item.label,
+        color: item.color,
+        percentage: ((item.value / total) * 100).toFixed(1)
+    }));
+    
     chartInstances[canvasId] = new Chart(ctx, {
-        type: 'doughnut',
+        type: 'treemap',
         data: {
-            labels: filteredData.map(item => item.label),
             datasets: [{
-                data: filteredData.map(item => item.value),
-                backgroundColor: filteredData.map(item => item.color),
+                tree: treemapData,
+                key: 'value',
+                groups: ['label'],
+                spacing: 1,
                 borderWidth: 2,
-                borderColor: '#fff'
+                borderColor: '#fff',
+                backgroundColor: (ctx) => {
+                    if (ctx.type !== 'data') return 'transparent';
+                    const item = treemapData[ctx.dataIndex];
+                    return item ? item.color : '#ccc';
+                },
+                labels: {
+                    display: true,
+                    formatter: (ctx) => {
+                        if (ctx.type !== 'data') return '';
+                        const item = treemapData[ctx.dataIndex];
+                        if (!item) return '';
+                        return [item.label, `${item.percentage}%`];
+                    },
+                    color: '#fff',
+                    font: {
+                        size: 12,
+                        weight: 'bold'
+                    },
+                    position: 'top'
+                }
             }]
         },
         options: {
-            ...commonChartOptions,
+            responsive: true,
+            maintainAspectRatio: true,
             plugins: {
-                ...commonChartOptions.plugins,
+                legend: {
+                    display: false
+                },
                 tooltip: {
-                    ...commonChartOptions.plugins.tooltip,
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 14,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 13
+                    },
                     callbacks: {
+                        title: function(context) {
+                            const item = treemapData[context[0].dataIndex];
+                            return item ? item.label : '';
+                        },
                         label: function(context) {
-                            const label = context.label || '';
-                            const value = context.parsed;
-                            const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                            const percentage = ((value / total) * 100).toFixed(1);
+                            const item = treemapData[context.dataIndex];
+                            if (!item) return '';
                             
-                            return `${label}: ${new Intl.NumberFormat('es-AR', {
+                            const formattedValue = new Intl.NumberFormat('es-AR', {
                                 style: 'currency',
                                 currency: 'ARS',
                                 minimumFractionDigits: 0,
                                 maximumFractionDigits: 0
-                            }).format(value)} (${percentage}%)`;
+                            }).format(item.value);
+                            
+                            return `${formattedValue} (${item.percentage}%)`;
                         }
                     }
                 }
