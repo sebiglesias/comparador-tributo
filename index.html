@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Compará cuánto pagás de impuestos en Monotributo, Responsable Inscripto o Relación de Dependencia. Calculadora actualizada 2025 con Ganancias, IVA, Autónomos.">
+    <meta name="keywords" content="monotributo vs relación de dependencia, calculadora monotributo argentina, responsable inscripto impuestos, ganancias 2025, categorías monotributo, cuánto paga un autónomo, IVA responsable inscripto">
+    <meta name="author" content="Comparador Tributo">
+    <meta name="theme-color" content="#0066CC">
+    
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/icons/favicon.png">
+    
+    <title>Calculadora Monotributo vs Responsable Inscripto vs Relación Dependencia Argentina 2025</title>
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header Ad Space -->
+    <div class="ad-space ad-header" aria-label="Espacio publicitario">
+        <div class="ad-placeholder">Publicidad 728x90 / 320x50</div>
+    </div>
+
+    <header>
+        <div class="container">
+            <h1>🧮 Comparador de Regímenes Tributarios Argentina 2025-2026</h1>
+            <p class="subtitle">Calculá cuánto te queda en mano: Monotributo vs Relación de Dependencia vs Responsable Inscripto</p>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="content-wrapper">
+            <!-- Main Content -->
+            <div class="main-content">
+                <!-- Input Form Section -->
+                <section class="card" id="input-section">
+                    <h2>📊 Ingresá tus datos</h2>
+                    
+                    <div class="form-group">
+                        <label for="income">
+                            Ingreso mensual bruto deseado (ARS)
+                            <span class="tooltip" data-tooltip="El monto que querés ganar o facturar por mes">ⓘ</span>
+                        </label>
+                        <input type="text" id="income" placeholder="Ej: 1000000" class="currency-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="activity-type">
+                            Tipo de actividad
+                            <span class="tooltip" data-tooltip="El tipo de actividad que desarrollás o desarrollarías">ⓘ</span>
+                        </label>
+                        <select id="activity-type">
+                            <option value="services">Servicios profesionales</option>
+                            <option value="goods">Venta de bienes/productos</option>
+                            <option value="mixed">Mixta</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="family-situation">
+                            Situación familiar
+                            <span class="tooltip" data-tooltip="Tu situación familiar determina las deducciones personales">ⓘ</span>
+                        </label>
+                        <select id="family-situation">
+                            <option value="single">Soltero sin hijos</option>
+                            <option value="married">Casado sin hijos</option>
+                            <option value="married-2kids">Casado con 2 hijos</option>
+                            <option value="custom">Personalizar</option>
+                        </select>
+                    </div>
+
+                    <div id="custom-family" class="custom-family-inputs" style="display: none;">
+                        <div class="form-group">
+                            <label for="spouse">¿Tenés cónyuge a cargo?</label>
+                            <input type="checkbox" id="spouse">
+                        </div>
+                        <div class="form-group">
+                            <label for="children">Cantidad de hijos</label>
+                            <input type="number" id="children" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <div class="expandable-section">
+                        <h3 class="section-toggle">
+                            <span>💰 Gastos deducibles mensuales (opcional)</span>
+                            <span class="toggle-icon">▼</span>
+                        </h3>
+                        <div class="section-content">
+                            <div class="form-group">
+                                <label for="rent">
+                                    Alquiler de vivienda
+                                    <span class="tooltip" data-tooltip="Monto mensual de alquiler (40% deducible con tope)">ⓘ</span>
+                                </label>
+                                <input type="text" id="rent" placeholder="0" class="currency-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="health-insurance">
+                                    Medicina prepaga
+                                    <span class="tooltip" data-tooltip="Cuota mensual de medicina prepaga">ⓘ</span>
+                                </label>
+                                <input type="text" id="health-insurance" placeholder="0" class="currency-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="domestic-service">
+                                    Servicio doméstico
+                                    <span class="tooltip" data-tooltip="Sueldos y aportes de personal doméstico">ⓘ</span>
+                                </label>
+                                <input type="text" id="domestic-service" placeholder="0" class="currency-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="education">
+                                    Gastos educativos
+                                    <span class="tooltip" data-tooltip="Cuotas de colegios, jardines de infantes">ⓘ</span>
+                                </label>
+                                <input type="text" id="education" placeholder="0" class="currency-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="expandable-section">
+                        <h3 class="section-toggle">
+                            <span>🏢 Gastos operativos del negocio (para autónomos)</span>
+                            <span class="toggle-icon">▼</span>
+                        </h3>
+                        <div class="section-content">
+                            <div class="form-group">
+                                <label for="vat-purchases">
+                                    Compras con IVA mensual
+                                    <span class="tooltip" data-tooltip="Total de compras que generan crédito fiscal de IVA">ⓘ</span>
+                                </label>
+                                <input type="text" id="vat-purchases" placeholder="0" class="currency-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="other-expenses">
+                                    Otros gastos deducibles
+                                    <span class="tooltip" data-tooltip="Alquiler de oficina, servicios, sueldos, etc.">ⓘ</span>
+                                </label>
+                                <input type="text" id="other-expenses" placeholder="0" class="currency-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="calculate-btn" class="btn-primary">Calcular y Comparar</button>
+                </section>
+
+                <!-- Ad Space Between Sections -->
+                <div class="ad-space ad-inline" aria-label="Espacio publicitario">
+                    <div class="ad-placeholder">Publicidad 336x280</div>
+                </div>
+
+                <!-- Results Section -->
+                <section class="card results-section" id="results-section" style="display: none;">
+                    <h2>📈 Resultados de la Comparación</h2>
+                    
+                    <!-- Best Option Indicator -->
+                    <div id="best-option" class="best-option-indicator"></div>
+
+                    <!-- Comparison Table -->
+                    <div class="comparison-table-wrapper">
+                        <table class="comparison-table">
+                            <thead>
+                                <tr>
+                                    <th>Concepto</th>
+                                    <th class="regime-col relacion">Relación de Dependencia</th>
+                                    <th class="regime-col monotributo">Monotributo</th>
+                                    <th class="regime-col responsable">Responsable Inscripto</th>
+                                </tr>
+                            </thead>
+                            <tbody id="comparison-tbody">
+                                <!-- Populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Visual Charts -->
+                    <div class="charts-container">
+                        <div class="chart-box">
+                            <h3>Ingreso Neto vs Impuestos</h3>
+                            <canvas id="bar-chart"></canvas>
+                        </div>
+                        <div class="chart-box">
+                            <h3>Distribución de Carga Tributaria</h3>
+                            <div id="pie-charts-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Breakdowns -->
+                    <div class="detailed-breakdowns">
+                        <div class="breakdown-card relacion">
+                            <h3>💼 Relación de Dependencia - Detalle</h3>
+                            <div id="relacion-detail"></div>
+                        </div>
+                        <div class="breakdown-card monotributo">
+                            <h3>📋 Monotributo - Detalle</h3>
+                            <div id="monotributo-detail"></div>
+                        </div>
+                        <div class="breakdown-card responsable">
+                            <h3>🏛️ Responsable Inscripto - Detalle</h3>
+                            <div id="responsable-detail"></div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons">
+                        <button id="print-btn" class="btn-secondary">🖨️ Imprimir Reporte</button>
+                        <button id="share-btn" class="btn-secondary">🔗 Compartir Resultados</button>
+                    </div>
+                </section>
+
+                <!-- Information Section -->
+                <section class="card info-section">
+                    <h2>ℹ️ ¿Cuándo conviene cada régimen?</h2>
+                    
+                    <div class="info-cards">
+                        <div class="info-card monotributo">
+                            <h3>📋 Monotributo</h3>
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>✅ Ventajas</h4>
+                                    <ul>
+                                        <li>Simplicidad administrativa</li>
+                                        <li>Cuota fija predecible</li>
+                                        <li>No requiere contador obligatorio</li>
+                                        <li>Obra social incluida</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>❌ Desventajas</h4>
+                                    <ul>
+                                        <li>No deduce costos ni gastos</li>
+                                        <li>Límites de facturación bajos</li>
+                                        <li>No computa crédito fiscal IVA</li>
+                                        <li>Cuota alta en categorías superiores</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="recommendation">
+                                <strong>Conviene cuando:</strong>
+                                <ul>
+                                    <li>Facturación &lt; $60M anuales</li>
+                                    <li>Actividad simple sin grandes gastos</li>
+                                    <li>No necesitás emitir factura A</li>
+                                    <li>Preferís simplicidad administrativa</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="info-card relacion">
+                            <h3>💼 Relación de Dependencia</h3>
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>✅ Ventajas</h4>
+                                    <ul>
+                                        <li>Aguinaldo (sueldo anual complementario)</li>
+                                        <li>Vacaciones pagas (14 días mínimo)</li>
+                                        <li>Licencias por enfermedad</li>
+                                        <li>Indemnización por despido</li>
+                                        <li>ART (cobertura accidentes trabajo)</li>
+                                        <li>Obra social de calidad</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>❌ Desventajas</h4>
+                                    <ul>
+                                        <li>Dependencia del empleador</li>
+                                        <li>Menos flexibilidad horaria</li>
+                                        <li>Retención automática Ganancias</li>
+                                        <li>No deduce gastos propios</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="recommendation">
+                                <strong>Conviene cuando:</strong>
+                                <ul>
+                                    <li>Buscás estabilidad y beneficios sociales</li>
+                                    <li>No querés riesgo empresarial</li>
+                                    <li>Valorás aguinaldo y vacaciones</li>
+                                    <li>Preferís obra social de calidad</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="info-card responsable">
+                            <h3>🏛️ Responsable Inscripto</h3>
+                            <div class="pros-cons">
+                                <div class="pros">
+                                    <h4>✅ Ventajas</h4>
+                                    <ul>
+                                        <li>Sin límite de facturación</li>
+                                        <li>Deduce todos los gastos reales</li>
+                                        <li>Recupera crédito fiscal IVA</li>
+                                        <li>Mejor percepción ante grandes empresas</li>
+                                        <li>Acceso a licitaciones públicas</li>
+                                        <li>Puede emitir facturas A y B</li>
+                                    </ul>
+                                </div>
+                                <div class="cons">
+                                    <h4>❌ Desventajas</h4>
+                                    <ul>
+                                        <li>Alta complejidad administrativa</li>
+                                        <li>Requiere contador matriculado</li>
+                                        <li>Obligaciones mensuales (IVA, IIBB)</li>
+                                        <li>Mayor fiscalización ARCA</li>
+                                        <li>Carga impositiva variable</li>
+                                        <li>Anticipos de Ganancias</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="recommendation">
+                                <strong>Conviene cuando:</strong>
+                                <ul>
+                                    <li>Facturación &gt; límite monotributo</li>
+                                    <li>Gastos operativos altos (recuperar IVA)</li>
+                                    <li>Clientes corporativos que piden factura A</li>
+                                    <li>Exportación de servicios</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- FAQ Section -->
+                <section class="card faq-section">
+                    <h2>❓ Preguntas Frecuentes</h2>
+                    <div class="faq-list" id="faq-list">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </section>
+            </div>
+
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <!-- Sidebar Ad Space -->
+                <div class="ad-space ad-sidebar" aria-label="Espacio publicitario">
+                    <div class="ad-placeholder">Publicidad 300x600</div>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="card sidebar-card">
+                    <h3>📚 Referencias Legales</h3>
+                    <ul class="reference-links">
+                        <li><a href="https://www.afip.gob.ar/monotributo/categorias.asp" target="_blank" rel="noopener">ARCA - Categorías Monotributo</a></li>
+                        <li><a href="https://www.arca.gob.ar/autonomos/categorias-y-aportes/" target="_blank" rel="noopener">ARCA - Autónomos</a></li>
+                        <li><a href="https://www.arca.gob.ar/gananciasYBienes/ganancias/personas-humanas-sucesiones-indivisas/deducciones/deducciones-personales.asp" target="_blank" rel="noopener">Deducciones Ganancias</a></li>
+                        <li><a href="https://www.argentina.gob.ar/normativa/nacional/ley-27743" target="_blank" rel="noopener">Ley 27.743 Monotributo</a></li>
+                        <li><a href="https://www.argentina.gob.ar/normativa/nacional/ley-20628-281" target="_blank" rel="noopener">Ley 20.628 Ganancias</a></li>
+                    </ul>
+                </div>
+
+                <!-- Theme Toggle -->
+                <div class="card sidebar-card">
+                    <h3>⚙️ Configuración</h3>
+                    <div class="setting-item">
+                        <label for="dark-mode-toggle">Modo oscuro</label>
+                        <input type="checkbox" id="dark-mode-toggle" class="toggle-switch">
+                    </div>
+                </div>
+            </aside>
+        </div>
+
+        <!-- Footer Ad Space -->
+        <div class="ad-space ad-footer" aria-label="Espacio publicitario">
+            <div class="ad-placeholder">Publicidad 728x90</div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="disclaimer">
+                <p><strong>⚠️ Disclaimer:</strong> Esta calculadora es orientativa. Los valores pueden cambiar según actualizaciones de ARCA. Consultá con un contador matriculado para asesoramiento personalizado. <strong>Última actualización: Enero 2026.</strong></p>
+            </div>
+            <div class="footer-content">
+                <p>&copy; 2026 Comparador Tributo Argentina. Todos los derechos reservados.</p>
+                <p>Datos basados en normativa vigente: Ley 27.743, Ley 20.628, Ley 24.241, Ley 23.349</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Mobile Sticky Ad -->
+    <div class="ad-space ad-mobile-sticky" aria-label="Espacio publicitario">
+        <div class="ad-placeholder">Publicidad móvil 320x50</div>
+    </div>
+
+    <script src="calculator.js"></script>
+    <script src="charts.js"></script>
+    <script src="app.js"></script>
+    
+    <!-- PWA Service Worker Registration -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(reg => console.log('Service Worker registrado'))
+                    .catch(err => console.log('Error al registrar Service Worker:', err));
+            });
+        }
+    </script>
+</body>
+</html>
