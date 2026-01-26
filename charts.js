@@ -6,6 +6,12 @@
 // Chart instances for cleanup
 let chartInstances = {};
 
+// Default business expenses for projection/scenario charts
+const DEFAULT_BUSINESS_EXPENSES = { vatPurchases: 0, otherExpenses: 0 };
+
+// Chart styling constants
+const TREEMAP_LABEL_FONT_SIZE = 14;
+
 /**
  * Destroy all existing charts
  */
@@ -174,7 +180,7 @@ function drawLineChart(canvasId, currentIncome, familySituation, activityType, d
         try {
             const relacion = calculateRelacionDependencia(income, familySituation, deductions);
             const monotributo = calculateMonotributo(income, activityType);
-            const responsable = calculateResponsableInscripto(income, activityType, familySituation, deductions, { vatPurchases: 0, otherExpenses: 0 });
+            const responsable = calculateResponsableInscripto(income, activityType, familySituation, deductions, DEFAULT_BUSINESS_EXPENSES);
             
             relacionData.push(relacion.netSalary);
             monotributoData.push(monotributo.netIncome);
@@ -379,7 +385,7 @@ function drawPieChart(canvasId, data, regime) {
                     },
                     color: '#fff',
                     font: {
-                        size: 14,
+                        size: TREEMAP_LABEL_FONT_SIZE,
                         weight: 'bold'
                     },
                     position: 'top'
@@ -460,7 +466,7 @@ function drawScenariosChart(canvasId, familySituation, activityType, deductions)
         try {
             const relacion = calculateRelacionDependencia(scenario.income, familySituation, deductions);
             const monotributo = calculateMonotributo(scenario.income, activityType);
-            const responsable = calculateResponsableInscripto(scenario.income, activityType, familySituation, deductions, { vatPurchases: 0, otherExpenses: 0 });
+            const responsable = calculateResponsableInscripto(scenario.income, activityType, familySituation, deductions, DEFAULT_BUSINESS_EXPENSES);
             
             relacionData.push(relacion.netSalary);
             monotributoData.push(monotributo.netIncome);
@@ -556,7 +562,7 @@ function createScenariosSummary(scenarios, familySituation, activityType, deduct
         try {
             const relacion = calculateRelacionDependencia(scenario.income, familySituation, deductions);
             const monotributo = calculateMonotributo(scenario.income, activityType);
-            const responsable = calculateResponsableInscripto(scenario.income, activityType, familySituation, deductions, { vatPurchases: 0, otherExpenses: 0 });
+            const responsable = calculateResponsableInscripto(scenario.income, activityType, familySituation, deductions, DEFAULT_BUSINESS_EXPENSES);
             
             const results = [
                 { name: 'Relación de Dependencia', net: relacion.netSalary },
@@ -601,7 +607,7 @@ function createAllCharts(results, currentIncome, familySituation, activityType, 
             ganancias: results.relacion.ganancias
         },
         monotributo: {
-            grossIncome: results.monotributo.monthlyFee + results.monotributo.netIncome,
+            grossIncome: results.income,  // Use original income, not calculated sum
             netIncome: results.monotributo.netIncome,
             monthlyFee: results.monotributo.monthlyFee
         },
