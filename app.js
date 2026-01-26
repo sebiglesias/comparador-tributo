@@ -125,8 +125,8 @@ function handleCurrencyChange() {
     // Clear income field
     formElements.income.value = '';
     
-    // Set default work modality if USD
-    if (isUSD && !formElements.workModality.value) {
+    // Set default work modality to foreign-contractor if USD and trigger info display
+    if (isUSD) {
         formElements.workModality.value = 'foreign-contractor';
         handleWorkModalityChange();
     }
