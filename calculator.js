@@ -81,12 +81,15 @@ const AUTONOMOS_CATEGORIES = [
  * Format number as currency (ARS)
  */
 function formatCurrency(amount) {
-    return new Intl.NumberFormat('es-AR', {
-        style: 'currency',
-        currency: 'ARS',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    }).format(amount);
+    if (typeof amount !== 'number' || isNaN(amount)) {
+        amount = 0;
+    }
+    
+    // Format with thousand separators
+    const formatted = Math.abs(amount).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    const sign = amount < 0 ? '-' : '';
+    
+    return `${sign}$ ${formatted}`;
 }
 
 /**
@@ -105,7 +108,11 @@ function formatPercentage(value) {
  */
 function parseCurrency(value) {
     if (typeof value === 'number') return value;
-    return parseFloat(value.replace(/[^0-9.-]/g, '')) || 0;
+    if (!value) return 0;
+    // Remove dots (thousand separators) and replace comma with dot if needed
+    const cleaned = String(value).replace(/\./g, '').replace(/,/g, '.');
+    const parsed = parseFloat(cleaned) || 0;
+    return parsed;
 }
 
 // =============================================================================
