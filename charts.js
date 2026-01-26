@@ -6,6 +6,12 @@
 // Chart instances for cleanup
 let chartInstances = {};
 
+// Default business expenses for projection/scenario charts
+const DEFAULT_BUSINESS_EXPENSES = { vatPurchases: 0, otherExpenses: 0 };
+
+// Chart styling constants
+const TREEMAP_LABEL_FONT_SIZE = 14;
+
 /**
  * Destroy all existing charts
  */
@@ -89,9 +95,9 @@ function drawBarChart(canvasId, data) {
                 {
                     label: 'Ingreso Neto',
                     data: [
-                        data.relacion?.net || 0,
-                        data.monotributo?.net || 0,
-                        data.responsable?.net || 0
+                        data.relacion?.netSalary || 0,
+                        data.monotributo?.netIncome || 0,
+                        data.responsable?.netIncome || 0
                     ],
                     backgroundColor: 'rgba(40, 167, 69, 0.8)',
                     borderColor: 'rgb(40, 167, 69)',
@@ -100,9 +106,9 @@ function drawBarChart(canvasId, data) {
                 {
                     label: 'Impuestos y Aportes',
                     data: [
-                        data.relacion?.tax || 0,
-                        data.monotributo?.tax || 0,
-                        data.responsable?.tax || 0
+                        ((data.relacion?.contributions?.total || 0) + (data.relacion?.ganancias || 0)),
+                        data.monotributo?.monthlyFee || 0,
+                        data.responsable?.taxes?.total || 0
                     ],
                     backgroundColor: 'rgba(220, 53, 69, 0.8)',
                     borderColor: 'rgb(220, 53, 69)',
@@ -174,9 +180,9 @@ function drawLineChart(canvasId, currentIncome, familySituation, activityType, d
         try {
             const relacion = calculateRelacionDependencia(income, familySituation, deductions);
             const monotributo = calculateMonotributo(income, activityType);
-            const responsable = calculateResponsableInscripto(income, activityType, deductions);
+            const responsable = calculateResponsableInscripto(income, activityType, familySituation, deductions, DEFAULT_BUSINESS_EXPENSES);
             
-            relacionData.push(relacion.netIncome);
+            relacionData.push(relacion.netSalary);
             monotributoData.push(monotributo.netIncome);
             responsableData.push(responsable.netIncome);
         } catch (e) {
@@ -294,11 +300,13 @@ function drawPieChart(canvasId, data, regime) {
     }
     
     let labels = [];
+    let labelsFull = []; // Full labels for tooltips
     let values = [];
     let colors = [];
     
     if (regime === 'relacion' && data) {
-        labels = ['Jubilación (11%)', 'PAMI (3%)', 'Obra Social (3%)', 'Ganancias'];
+        labels = ['J', 'P', 'OS', 'G'];
+        labelsFull = ['Jubilación (11%)', 'PAMI (3%)', 'Obra Social (3%)', 'Ganancias'];
         values = [
             data.contributions.jubilacion,
             data.contributions.pami,
@@ -307,7 +315,8 @@ function drawPieChart(canvasId, data, regime) {
         ];
         colors = ['#FF6B6B', '#4ECDC4', '#FFD93D', '#A8E6CF'];
     } else if (regime === 'monotributo' && data) {
-        labels = ['Impuesto Integrado', 'SIPA (Jubilación)', 'Obra Social'];
+        labels = ['I', 'S', 'OS'];
+        labelsFull = ['Impuesto Integrado', 'SIPA (Jubilación)', 'Obra Social'];
         values = [
             data.breakdown.impuesto,
             data.breakdown.sipa,
@@ -315,7 +324,8 @@ function drawPieChart(canvasId, data, regime) {
         ];
         colors = ['#28A745', '#17A2B8', '#FFC107'];
     } else if (regime === 'responsable' && data) {
-        labels = ['Autónomos', 'IVA Neto', 'Ganancias', 'Ingresos Brutos', 'Imp. Cheque'];
+        labels = ['A', 'IVA', 'G', 'IB', 'IC'];
+        labelsFull = ['Autónomos', 'IVA Neto', 'Ganancias', 'Ingresos Brutos', 'Imp. Cheque'];
         values = [
             data.taxes.autonomos,
             data.taxes.iva.net,
@@ -329,6 +339,7 @@ function drawPieChart(canvasId, data, regime) {
     // Filter out zero values and prepare treemap data
     const filteredData = labels.map((label, index) => ({
         label,
+        labelFull: labelsFull[index],
         value: values[index],
         color: colors[index]
     })).filter(item => item.value > 0);
@@ -344,6 +355,7 @@ function drawPieChart(canvasId, data, regime) {
     const treemapData = filteredData.map((item, index) => ({
         value: item.value,
         label: item.label,
+        labelFull: item.labelFull,
         color: item.color,
         percentage: ((item.value / total) * 100).toFixed(1)
     }));
@@ -373,7 +385,7 @@ function drawPieChart(canvasId, data, regime) {
                     },
                     color: '#fff',
                     font: {
-                        size: 12,
+                        size: TREEMAP_LABEL_FONT_SIZE,
                         weight: 'bold'
                     },
                     position: 'top'
@@ -400,7 +412,7 @@ function drawPieChart(canvasId, data, regime) {
                     callbacks: {
                         title: function(context) {
                             const item = treemapData[context[0].dataIndex];
-                            return item ? item.label : '';
+                            return item ? item.labelFull : '';
                         },
                         label: function(context) {
                             const item = treemapData[context.dataIndex];
@@ -454,9 +466,9 @@ function drawScenariosChart(canvasId, familySituation, activityType, deductions)
         try {
             const relacion = calculateRelacionDependencia(scenario.income, familySituation, deductions);
             const monotributo = calculateMonotributo(scenario.income, activityType);
-            const responsable = calculateResponsableInscripto(scenario.income, activityType, deductions);
+            const responsable = calculateResponsableInscripto(scenario.income, activityType, familySituation, deductions, DEFAULT_BUSINESS_EXPENSES);
             
-            relacionData.push(relacion.netIncome);
+            relacionData.push(relacion.netSalary);
             monotributoData.push(monotributo.netIncome);
             responsableData.push(responsable.netIncome);
         } catch (e) {
@@ -550,10 +562,10 @@ function createScenariosSummary(scenarios, familySituation, activityType, deduct
         try {
             const relacion = calculateRelacionDependencia(scenario.income, familySituation, deductions);
             const monotributo = calculateMonotributo(scenario.income, activityType);
-            const responsable = calculateResponsableInscripto(scenario.income, activityType, deductions);
+            const responsable = calculateResponsableInscripto(scenario.income, activityType, familySituation, deductions, DEFAULT_BUSINESS_EXPENSES);
             
             const results = [
-                { name: 'Relación de Dependencia', net: relacion.netIncome },
+                { name: 'Relación de Dependencia', net: relacion.netSalary },
                 { name: 'Monotributo', net: monotributo.netIncome },
                 { name: 'Responsable Inscripto', net: responsable.netIncome }
             ];
@@ -588,19 +600,21 @@ function createAllCharts(results, currentIncome, familySituation, activityType, 
     // Bar chart
     const barData = {
         relacion: {
-            gross: results.relacion.grossIncome,
-            net: results.relacion.netIncome,
-            tax: results.relacion.totalTax
+            grossIncome: results.relacion.grossSalary,
+            netIncome: results.relacion.netSalary,
+            netSalary: results.relacion.netSalary,
+            contributions: results.relacion.contributions,
+            ganancias: results.relacion.ganancias
         },
         monotributo: {
-            gross: results.monotributo.grossIncome,
-            net: results.monotributo.netIncome,
-            tax: results.monotributo.totalTax
+            grossIncome: results.income,  // Use original income, not calculated sum
+            netIncome: results.monotributo.netIncome,
+            monthlyFee: results.monotributo.monthlyFee
         },
         responsable: {
-            gross: results.responsable.grossIncome,
-            net: results.responsable.netIncome,
-            tax: results.responsable.totalTax
+            grossIncome: results.responsable.monthlyIncome,
+            netIncome: results.responsable.netIncome,
+            taxes: results.responsable.taxes
         }
     };
     drawBarChart('bar-chart', barData);
