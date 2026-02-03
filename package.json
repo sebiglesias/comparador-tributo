@@ -1,0 +1,17 @@
+{
+  "name": "comparador-tributo",
+  "version": "1.0.0",
+  "description": "Aplicación web PWA (Progressive Web App) para comparar exhaustivamente el costo real entre trabajar en **Relación de Dependencia**, **Monotributo** y **Responsable Inscripto** en Argentina, con normativa actualizada vigente para el primer semestre 2026.",
+  "main": "app.js",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^30.2.0"
+  }
+}
