@@ -41,6 +41,8 @@ describe('Utility Functions', () => {
         });
 
         test('rounds to nearest integer', () => {
+            // toFixed(0) uses standard "round half up" rounding
+            // 0.5 rounds up to next integer
             expect(formatCurrency(1000.49)).toBe('$ 1.000');
             expect(formatCurrency(1000.50)).toBe('$ 1.001'); // Rounds half up
             expect(formatCurrency(999.50)).toBe('$ 1.000'); // Rounds half up
