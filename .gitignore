@@ -22,6 +22,9 @@ yarn-error.log*
 package-lock.json
 yarn.lock
 
+# Test coverage
+coverage/
+
 # Build outputs (if added in future)
 dist/
 build/

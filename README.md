@@ -108,6 +108,30 @@ php -S localhost:8000
 http://localhost:8000
 ```
 
+### Ejecutar Tests
+
+El proyecto incluye una suite completa de tests para validar todas las fórmulas y operaciones matemáticas:
+
+```bash
+# Instalar dependencias de desarrollo
+npm install
+
+# Ejecutar tests
+npm test
+
+# Ejecutar tests con coverage
+npm run test:coverage
+
+# Modo watch (re-ejecuta al guardar cambios)
+npm run test:watch
+```
+
+**Cobertura de Tests:**
+- ✅ 67 tests validando todas las fórmulas tributarias
+- ✅ 95.53% de cobertura de código
+- ✅ Tests para Monotributo, Ganancias, Relación de Dependencia y Responsable Inscripto
+- ✅ Validación de cálculos de aportes, deducciones y tasas efectivas
+
 ### Uso de la Calculadora
 
 1. **Ingresar datos básicos:**
